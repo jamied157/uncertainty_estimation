@@ -1,0 +1,8 @@
+venv/
+datasets/
+csv/
+plots/
+pred/
+*.ipynb*
+.DS_Store
+__pycache__/

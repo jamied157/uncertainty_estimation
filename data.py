@@ -1,8 +1,12 @@
-import numpy as np
+"""
+Utilities for data loading, used after the data is split for cross validation.
+"""
 import json
+import numpy as np
+from pathlib import Path
 
 
-def importUCI(dataset_name):
+def import_uci(dataset_name):
     """
     Imports a dataset from the UCI respository
     :param dataset_name: the string file name of the repository
@@ -44,12 +48,12 @@ def get_split_index(dataset_name, split, train):
     :param train: a boolean specifying train or test
     :return X, y:
     """
-    _DATA_DIRECTORY_PATH = "./datasets/" + dataset_name + "/data/"
+    _DATA_DIRECTORY_PATH = Path("./datasets/" + dataset_name + "/data")
 
     if train:
-        _SPLIT_FILE = _DATA_DIRECTORY_PATH + "index_train_" + str(split) + ".txt"
+        _SPLIT_FILE = _DATA_DIRECTORY_PATH / f"index_train_{split}.txt"
     else:
-        _SPLIT_FILE = _DATA_DIRECTORY_PATH + "index_test_" + str(split) + ".txt"
+        _SPLIT_FILE = _DATA_DIRECTORY_PATH / f"index_test_{split}.txt"
 
     indices = np.loadtxt(_SPLIT_FILE)
 
@@ -58,18 +62,17 @@ def get_split_index(dataset_name, split, train):
 
 def save_results(dataset_name, modelname, err_array, calibration_array, info_dict):
     """Save results from experiment"""
-    _RESULTS_DIRECTORY_PATH = "./datasets/" + dataset_name + "/results/" + modelname
-    np.savetxt(_RESULTS_DIRECTORY_PATH + "/nll_array.txt", err_array[:, 0])
-    np.savetxt(_RESULTS_DIRECTORY_PATH + "/rmse_array.txt", err_array[:, 1])
-    np.savetxt(_RESULTS_DIRECTORY_PATH + "/calibration_array.txt", calibration_array)
-    timestamp = info_dict["execution time"]
+    _RESULTS_DIRECTORY_PATH = Path("./datasets/" + dataset_name + "/results/" + modelname)
+    _RESULTS_DIRECTORY_PATH.mkdir(parents=True, exist_ok=True)
 
-    with open(
-        _RESULTS_DIRECTORY_PATH + "/info_dicts/" + str(timestamp) + ".txt", "w+"
-    ) as outfile:
+    np.savetxt(_RESULTS_DIRECTORY_PATH / "nll_array.txt", err_array[:, 0])
+    np.savetxt(_RESULTS_DIRECTORY_PATH / "rmse_array.txt", err_array[:, 1])
+    np.savetxt(_RESULTS_DIRECTORY_PATH / "calibration_array.txt", calibration_array)
+    timestamp = info_dict["execution time"]
+    
+    (_RESULTS_DIRECTORY_PATH / "info_dicts").mkdir(exist_ok=True)
+    with open(_RESULTS_DIRECTORY_PATH / "info_dicts" / f"{timestamp}.json", "w+") as outfile:
         json.dump(info_dict, outfile)
 
-    with open(
-        _RESULTS_DIRECTORY_PATH + "/info_dicts/" + "most_recent" + ".txt", "w+"
-    ) as outfile:
+    with open(_RESULTS_DIRECTORY_PATH / "info_dicts" / "most_recent.json", "w+") as outfile:
         json.dump(info_dict, outfile)
