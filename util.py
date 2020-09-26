@@ -1,9 +1,9 @@
+import logging
+
 import numpy as np
 import torch
-from torch import Tensor
 from torch.utils import data
 from sklearn.model_selection import ParameterGrid
-import logging
 
 
 class UncertaintyDataset(data.Dataset):
@@ -12,7 +12,7 @@ class UncertaintyDataset(data.Dataset):
     """
 
     def __init__(self, X, Y):
-        self.X, self.Y = Tensor(X), Tensor(Y)
+        self.X, self.Y = torch.Tensor(X), torch.Tensor(Y)
 
         self.y_normalised = False
         self.x_normalised = False
@@ -57,7 +57,7 @@ class UncertaintyDataset(data.Dataset):
         return self.X[index, :], self.Y[index]
 
 
-def ensemble_loss(y: Tensor, y_hat_arr: Tensor, tau: float):
+def ensemble_loss(y: torch.Tensor, y_hat_arr: torch.Tensor, tau: float):
     """Loss for MC Dropout Net"""
     t = y_hat_arr.shape[0]
     ll = (
@@ -88,7 +88,10 @@ def normal_nll(targets: torch.Tensor, predictions: torch.Tensor, var: torch.Tens
 
 
 def cross_validate(train_data, ModelClass, param_grid):
-    """Cross validation routine - splits once and loops over possible parameters, reports parameters with least error"""
+    """
+    Cross validation routine - splits once and loops over possible parameters, 
+    reports parameters with least error
+    """
     param_grid = ParameterGrid(param_grid)
     num_training_examples = int(0.8 * len(train_data))
 

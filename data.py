@@ -2,8 +2,9 @@
 Utilities for data loading, used after the data is split for cross validation.
 """
 import json
-import numpy as np
 from pathlib import Path
+
+import numpy as np
 
 
 def import_uci(dataset_name):
@@ -69,7 +70,7 @@ def save_results(dataset_name, modelname, err_array, calibration_array, info_dic
     np.savetxt(_RESULTS_DIRECTORY_PATH / "rmse_array.txt", err_array[:, 1])
     np.savetxt(_RESULTS_DIRECTORY_PATH / "calibration_array.txt", calibration_array)
     timestamp = info_dict["execution time"]
-    
+
     (_RESULTS_DIRECTORY_PATH / "info_dicts").mkdir(exist_ok=True)
     with open(_RESULTS_DIRECTORY_PATH / "info_dicts" / f"{timestamp}.json", "w+") as outfile:
         json.dump(info_dict, outfile)

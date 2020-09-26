@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+Cheap and dirty script to examine an experiment log
+"""
 import numpy as np
 
 # Process experiment log into something useful

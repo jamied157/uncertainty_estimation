@@ -1,12 +1,14 @@
 #!/usr/bin/env python
+import argparse
+import logging
+import time
+
+import numpy as np
+import torch
+
 import data
 import util
 from models import get_model
-import logging
-import numpy as np
-import torch
-import argparse
-import time
 
 # Keep track of time for saving timestamp
 execution_time = time.time()
@@ -41,10 +43,11 @@ np.random.seed(seed)
 torch.random.manual_seed(seed)
 
 # Select model from arguments
-model, param_dict = get_model(model_name.lower())
 
 def main():
     # Import data
+    model, param_dict = get_model(model_name.lower())
+
     X, y = data.import_uci(dataset)
     n_splits = data.load_split_num(dataset)
     err_array = np.zeros((n_splits, 2))
